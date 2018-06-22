@@ -15,10 +15,10 @@ const byte    left_servo_pin = 11;
 const byte   right_servo_pin = 12;
 
 // TODO: Determine center values and left/right speeds for my servos
-const int  left_center_value  = 1499;
-const int  right_center_value = 1512;
+const int  left_center_value  = 1500;
+const int  right_center_value = 1500;
 const byte left_spd           = 50;
-const byte right_spd          = 57;
+const byte right_spd          = 50;
 
 // encoder counter and desired travel distance
 volatile int cc_left, cc_right;     // encoder counters
