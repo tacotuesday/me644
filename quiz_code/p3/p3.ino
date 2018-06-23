@@ -1,10 +1,10 @@
 //p3.ino -- Practice for Quiz 5, problem 3.
 
 //Define pinout
-bool injuries = 2;
-bool police = 3;
-bool fire = 4;
-bool ambulance = 5;
+const byte injuries = 2;
+const byte police = 3;
+const byte fire = 4;
+const byte ambulance = 5;
 
 void setup() {
   Serial.begin(9600);
@@ -18,6 +18,7 @@ void loop() {
   if ((police == 0 && (injuries == 1 || fire == 1)) || fire == 0) {
     digitalWrite(ambulance, HIGH);
   }
+  digitalWrite(ambulance, HIGH);
   Serial.println("injuries = ");
   Serial.print(injuries, DEC);
   Serial.println("police = ");
