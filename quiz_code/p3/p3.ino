@@ -1,10 +1,10 @@
 //p3.ino -- Practice for Quiz 5, problem 3.
 
 //Define pinout
-const byte injuries = 2;
-const byte police = 3;
-const byte fire = 4;
-const byte ambulance = 5;
+const byte injSwitch = 2;
+const byte polButton = 3;
+const byte fireButton = 4;
+const byte ambLED = 5;
 
 void setup() {
   Serial.begin(9600);
@@ -15,16 +15,21 @@ void setup() {
 }
 
 void loop() {
+  byte injuries = digitalRead(injSwitch);
+  byte police = digitalRead(polButton);
+  byte fire = digitalRead(fireButton);
+  byte ambulance = digitalRead(ambLED);
+
   if ((police == 0 && (injuries == 1 || fire == 1)) || fire == 0) {
     digitalWrite(ambulance, HIGH);
   }
   digitalWrite(ambulance, HIGH);
-  Serial.println("injuries = ");
+  Serial.println(F("injuries = "));
   Serial.print(injuries, DEC);
-  Serial.println("police = ");
+  Serial.println(F("police = "));
   Serial.print(police, DEC);
-  Serial.println("fire = ");
+  Serial.println(F("fire = "));
   Serial.print(fire, DEC);
-  Serial.println("ambulance = ");
+  Serial.println(F("ambulance = "));
   Serial.print(ambulance, DEC);
 }
