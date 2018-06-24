@@ -3,7 +3,7 @@
 const byte grButton = 13;
 const byte rButton = 12;
 const byte yButton = 11;
-const byte grLED = 5
+const byte grLED = 5;
 const byte rLED = 4;
 const byte yLED = 3;
 
@@ -34,6 +34,8 @@ void loop() {
   if (grState != lastGrState) {
     if (grState == HIGH) {
       grCounter++;
+      Serial.print("number of green pushes: ");
+      Serial.println(grCounter);
     }
     delay(50);
   }
@@ -41,15 +43,34 @@ void loop() {
   if (rState != lastRState) {
     if (rState == HIGH) {
       rCounter++;
+      Serial.print("number of red pushes: ");
+      Serial.println(rCounter);
     }
     delay(50);
   }
   lastRState = rState;
   if (yState != lastYState) {
     if (yState == HIGH) {
-      grCounter++;
+      yCounter++;
+      Serial.print("number of yellow pushes: ");
+      Serial.println(yCounter);
     }
     delay(50);
   }
   lastYState = yState;
+  if (grCounter > rCounter && grCounter > yCounter) {
+    digitalWrite(rLED, LOW);
+    digitalWrite(yLED, LOW);
+    digitalWrite(grLED, HIGH);
+   }
+  else if (rCounter > grCounter && rCounter > yCounter) {
+    digitalWrite(grLED, LOW);
+    digitalWrite(yLED, LOW);
+    digitalWrite(rLED, HIGH);
+  }
+   else if (yCounter > grCounter && yCounter > rCounter) {
+    digitalWrite(grLED, LOW);
+    digitalWrite(rLED, LOW);
+    digitalWrite(yLED, HIGH);
+  }
 }
