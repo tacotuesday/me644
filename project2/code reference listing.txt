@@ -1,0 +1,5 @@
+declaring_variables.ino: declaring variables, Serial function
+for_loop.ino: FOR loop, Serial
+IO_control.ino: pinMode, Serial, digitalWrite, delay()
+open_loop_motor.ino: pinMode, FOR loop, Serial
+photo_resistor_ADC.ino: pinMode, analogWrite, Serial, SWITCH()
