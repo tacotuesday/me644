@@ -53,15 +53,22 @@ void loop() {
     }
     Serial.print( "center_value = ");
     Serial.println(center_value);
-    spd = 0;
-    for (cc1 = 0; cc1 < 16; cc1++) {
-      spd = spd + pulseIn(speed_pin, HIGH);
-    }
-    spd = spd/16;
-    Serial.print(spd);
-    Serial.println(" (us)");
-  }
+    measured_t_pass = read_encoder();
+    Serial.print("measured_t_pass = "); Serial.print(measured_t_pass); Serial.print(", ");
+
   keybrd = 0;
   if (control_mode == 0) { test_servo.write(center_value); }
   else { test_servo.writeMicroseconds(center_value); }
+  }
+}
+
+long read_encoder() {
+  unsigned long t_pass;
+
+  int e_value = digitalRead(speed_pin);
+  while (digitalRead(speed_pin) == e_value) { }
+  t_pass = millis();
+  while (digitalRead(speed_pin) != e_value) { }
+  t_pass = millis() - t_pass;
+  return t_pass;
 }
