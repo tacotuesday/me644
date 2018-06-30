@@ -8,8 +8,8 @@ Servo test_servo;
 
 // pin definition
 int right_servo_pin = 12;
-int  left_servo_pin = 11;
-int speed_pin = 7;
+// int  left_servo_pin = 11;
+int speed_pin = 11;
 int spd;
 int cc1;
 

@@ -8,12 +8,12 @@ Servo test_servo;
 
 // pin definition
 const byte servo_pin = 12;
-const byte speed_pin = 7;
+const byte speed_pin = 11;
 unsigned long measured_t_pass;
 
 // initial center values
 int center_value       = 90;    // when using .write
-int center_value_micro = 1000;  //when using .writeMicroseconds
+int center_value_micro = 1300;  //when using .writeMicroseconds
 // Center Value = 2000, Measured T Pass = 53
 // Center Value = 1000, Measured T Pass = 52
 
