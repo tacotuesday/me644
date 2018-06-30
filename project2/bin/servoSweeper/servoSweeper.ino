@@ -12,7 +12,7 @@ Servo testServo;
 const byte servoPin = 12;
 const byte speedPin = 11;
 int offsetLockout = 15;  // Adjust this based on how your servo acts at center.
-int defineCenter = 1491;  // Use center_check.ino to find this value for servo.
+int defineCenter = 1469;  // Use center_check.ino to find this value for servo.
 int servoInput;
 unsigned long measuredTPass;
 unsigned long delayLength = 350;  // Delay in microseconds: adjust accordingly.
@@ -25,7 +25,7 @@ void setup() {
   Serial.print("Measured T Pass");
   Serial.println();
   testServo.attach(servoPin);
-  for (servoInput = 1350; servoInput <= (defineCenter - offsetLockout); ++servoInput) {
+  for (servoInput = 1000; servoInput <= (defineCenter - offsetLockout); ++servoInput) {
     testServo.writeMicroseconds(servoInput);
     measuredTPass = readEncoder();
     Serial.print(servoInput);
@@ -35,7 +35,7 @@ void setup() {
     delayMicroseconds(delayLength);
 
   }
-  for (servoInput = (defineCenter + offsetLockout); servoInput <= 1550; ++servoInput) {
+  for (servoInput = (defineCenter + offsetLockout); servoInput <= 2000; ++servoInput) {
     testServo.writeMicroseconds(servoInput);
     measuredTPass = readEncoder();
     Serial.print(servoInput);
