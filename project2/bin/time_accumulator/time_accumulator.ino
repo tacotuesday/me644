@@ -24,13 +24,15 @@ void setup() {
     test_time = millis(); // Start timing the servo
     test_servo.writeMicroseconds(center_value);
     measured_t_pass = read_encoder(); // Get time for one spoke pass
-    Serial.print("Center Value = ");
+    Serial.print("Center Value");
+    Serial.print(", ");
+    Serial.print("Test time");
+    Serial.print(", ");
+    Serial.print("Measured T Pass");
     Serial.print(center_value);
     Serial.print(", ");
-    Serial.print("Test time = ");
     Serial.print(test_time);
     Serial.print(", ");
-    Serial.print("Measured T Pass = ");
     Serial.print(measured_t_pass);
     Serial.println();
   }
