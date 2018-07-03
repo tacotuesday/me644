@@ -19,7 +19,7 @@ void setup() {
   // Experimentally-determined t_pass at max motor speed = 20ms.
   // This is for ONE specific servo: modify the below value based on calibration
   // curve for the servo motor being evaluated.
-  while(measured_t_pass >= 20) {
+  while(measured_t_pass >= 19) {
     test_servo.attach(servo_pin);
     test_time = millis(); // Start timing the servo
     test_servo.writeMicroseconds(center_value);
@@ -29,6 +29,7 @@ void setup() {
     Serial.print("Test time");
     Serial.print(", ");
     Serial.print("Measured T Pass");
+    Serial.print("");
     Serial.print(center_value);
     Serial.print(", ");
     Serial.print(test_time);
