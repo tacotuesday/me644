@@ -18,41 +18,26 @@ int  left_center_value = 1491;
 // encoder counter and desired travel distance
 volatile int cc_left;
 // = desired distance ft * (12 in/ft * 64 encoder_changes/rotation / 8 in/rotation)
-int   right_servo_pin = 12;
-int    left_servo_pin = 11;
-
-// servo center values & speeds
-int right_center_value = 1515;
-int  left_center_value = 1501;
-
-// encoder counter and desired travel distance
-volatile int cc_left;
-// = desired distance ft * (12 in/ft * 64 encoder_changes/rotation / 8 in/rotation)
->>>>>>> master
-int distance = 4*(12*64/8);  // = # of 0.125" w fine encoder wheels
+int distance = 10*(12*64/8);  // = # of 0.125" w fine encoder wheels
 
 // PID variables & initialization
 double dt;                            // time difference between encoders
-double    left_spd = 50;
-double   right_spd = 53;
+double    left_spd = 150;
+double   right_spd = 132;
 double desired_dt  = 0;               // desired time difference between encoders
-PID myPID(&dt, &right_spd, &desired_dt, 0.01, 1, 0, DIRECT);
+PID myPID(&dt, &right_spd, &desired_dt, 0.084457214, 7.712170356, 0.014842, DIRECT);
 
 void setup() {
   Serial.begin(9600);         // initialize USB communication
   myPID.SetMode(AUTOMATIC);   //turn on PID
   myPID.SetOutputLimits( right_spd - 30, right_spd + 30 );
-<<<<<<< HEAD
 
-=======
-
->>>>>>> master
   pinMode(right_encoder_pin, INPUT_PULLUP);
   pinMode( left_encoder_pin, INPUT_PULLUP);
   attachInterrupt( left_encoder_pin,  left_counter, CHANGE);
   attach_servos(1);
   orient_encoders();
-  delay(5000);
+  delay(1000);
 }
 
 void loop() {
@@ -65,7 +50,8 @@ void loop() {
     Serial.print(right_spd);  Serial.println(";");
     myPID.Compute();
   }
-  drive(0, 0); delay(1000);
+  drive(0, 0);
+  delay(1000);
   attach_servos(0);
 }
 long read_encoders() {
@@ -77,22 +63,13 @@ long read_encoders() {
   t_right_pass = millis();
   while (digitalRead(right_encoder_pin) != right_value) { }
   t_right_pass = millis() - t_right_pass;
-<<<<<<< HEAD
 
-=======
-
->>>>>>> master
   int left_value = digitalRead(left_encoder_pin);
   while (digitalRead(left_encoder_pin)  == left_value) { }
   t_left_pass  = millis();
   while (digitalRead(left_encoder_pin)  != left_value) { }
-<<<<<<< HEAD
   t_left_pass  = millis() - t_left_pass;
 
-=======
-  t_left_pass  = millis() - t_left_pass;
-
->>>>>>> master
   return delta_t_pass = t_left_pass - t_right_pass;
 }
 
