@@ -12,8 +12,8 @@ int   right_servo_pin = 11;
 // servo center values & speeds
 int right_center_value = 1469;
 int  left_center_value = 1491;
-double  left_spd       = 107;
-double right_spd       = 100;
+double  left_spd       = 164;
+double right_spd       = 150;
 
 // encoder counter and desired travel distance
 volatile int cc_left, cc_right;   // encoder counters

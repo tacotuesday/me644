@@ -8,16 +8,16 @@ Servo  left_servo;
 // pin definition
 int right_encoder_pin = 10;
 int  left_encoder_pin =  9;
-int   right_servo_pin = 12;
-int    left_servo_pin = 11;
+int   right_servo_pin = 11;
+int    left_servo_pin = 12;
 
 // servo center values & speeds
-int right_center_value = 1515;
-int  left_center_value = 1501;
+int right_center_value = 1469;
+int  left_center_value = 1491;
 
 // encoder counter and desired travel distance
 volatile int cc_left;
-// = desired distance ft * (12 in/ft * 64 encoder_changes/rotation / 8 in/rotation) 
+// = desired distance ft * (12 in/ft * 64 encoder_changes/rotation / 8 in/rotation)
 int distance = 4*(12*64/8);  // = # of 0.125" w fine encoder wheels
 
 // PID variables & initialization
@@ -31,7 +31,7 @@ void setup() {
   Serial.begin(9600);         // initialize USB communication
   myPID.SetMode(AUTOMATIC);   //turn on PID
   myPID.SetOutputLimits( right_spd - 30, right_spd + 30 );
-  
+
   pinMode(right_encoder_pin, INPUT_PULLUP);
   pinMode( left_encoder_pin, INPUT_PULLUP);
   attachInterrupt( left_encoder_pin,  left_counter, CHANGE);
@@ -62,13 +62,13 @@ long read_encoders() {
   t_right_pass = millis();
   while (digitalRead(right_encoder_pin) != right_value) { }
   t_right_pass = millis() - t_right_pass;
-  
+
   int left_value = digitalRead(left_encoder_pin);
   while (digitalRead(left_encoder_pin)  == left_value) { }
   t_left_pass  = millis();
   while (digitalRead(left_encoder_pin)  != left_value) { }
-  t_left_pass  = millis() - t_left_pass; 
-  
+  t_left_pass  = millis() - t_left_pass;
+
   return delta_t_pass = t_left_pass - t_right_pass;
 }
 

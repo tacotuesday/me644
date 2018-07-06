@@ -20,12 +20,13 @@ volatile int cc_left;
 // = desired distance ft * (12 in/ft * 64 encoder_changes/rotation / 8 in/rotation)
 int distance = 10*(12*64/8);  // = # of 0.125" w fine encoder wheels
 
+
 // PID variables & initialization
 double dt;                            // time difference between encoders
-double    left_spd = 100;
-double   right_spd = 100;
+double    left_spd = 150;   // used to be 119
+double   right_spd = 132;   // used to be 100
 double desired_dt  = 0;               // desired time difference between encoders
-PID myPID(&dt, &right_spd, &desired_dt, .00022, .004, 0, DIRECT);
+PID myPID(&dt, &right_spd, &desired_dt,0.084457214,7.712170356,0.014842, DIRECT);
 
 void setup() {
   Serial.begin(9600);         // initialize USB communication

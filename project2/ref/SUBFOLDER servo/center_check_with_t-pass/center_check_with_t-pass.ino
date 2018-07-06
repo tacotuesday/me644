@@ -15,7 +15,7 @@ unsigned int measured_t_pass;
 
 // initial center values
 int center_value       = 90;    // when using .write
-int center_value_micro = 1700;  //when using .writeMicroseconds
+int center_value_micro = 1550;  //when using .writeMicroseconds
 
 int keybrd;   // keyboard command variable
 
