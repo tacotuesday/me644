@@ -8,14 +8,14 @@ Servo test_servo;
 
 // pin definition
 const byte servo_pin = 12;
-const byte speed_pin = 7;
+const byte speed_pin = 9;
 int spd;
 int cc1;
 unsigned int measured_t_pass;
 
 // initial center values
 int center_value       = 90;    // when using .write
-int center_value_micro = 1400;  //when using .writeMicroseconds
+int center_value_micro = 1550;  //when using .writeMicroseconds
 
 int keybrd;   // keyboard command variable
 
