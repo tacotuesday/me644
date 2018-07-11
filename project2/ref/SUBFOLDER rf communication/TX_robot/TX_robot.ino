@@ -2,7 +2,9 @@
 #include "RF24.h"   // transciever library
 
 /* Set this radio as radio number 0 or 1 */
-bool radioNumber = 0;    // equivalent to boolean data type
+
+bool radioNumber = 0;    // equivalent to boolean data type 
+
 
 /* Hardware configuration: Set up nRF24L01 radio on SPI bus plus pins 7 & 8 */
 RF24 radio(7,8);        // pins that CE & CSN are connected to, respectively.
@@ -32,7 +34,7 @@ void setup() {
 
 void loop() {
   /* read number from terminal screen */
-  if (Serial.available()) { cmd = Serial.read() - 48; }
+  if (Serial.available()) { cmd = Serial.read() - 48; }  
   if (!radio.write( &cmd, sizeof(unsigned long) )){ Serial.println(F("failed")); }
 //  delay(1000);    // Try again 1 second later
 }

@@ -19,10 +19,10 @@ double measured_speed, control_signal_to_motor, desired_speed, error;
 
 // specify links and initial tuning parameters
 // use Direction = DIRECT  to INCREASE controller output when e = r - y > 0 
-PID myPID(&measured_speed, &control_signal_to_motor, &desired_speed, 2, 5, 1, DIRECT);
+//PID myPID(&measured_speed, &control_signal_to_motor, &desired_speed, 2, 5, 1, DIRECT);
 
 // use Direction = REVERSE to DECREASE controller output when e = r - y > 0 
-//PID myPID(&measured_speed, &control_signal_to_motor, &desired_speed, 2, 5, 1, REVERSE);
+PID myPID(&measured_speed, &control_signal_to_motor, &desired_speed, 2, 5, 1, REVERSE);
 
 void setup() {
   Serial.begin(9600);
