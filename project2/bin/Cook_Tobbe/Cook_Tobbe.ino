@@ -1,3 +1,5 @@
+// Cook_Tobbe.ino -- Project 2 production code by Grafton Cook and Joe Cook_Tobbe
+
 #include <Servo.h>
 #include <PID_v1.h>
 
@@ -18,11 +20,11 @@ int  left_center_value = 1491;
 // encoder counter and desired travel distance
 volatile int cc_left;
 // = desired distance ft * (12 in/ft * 64 encoder_changes/rotation / 8 in/rotation)
-int distance = 10*(12*64/8);  // = # of 0.125" w fine encoder wheels
+int distance = 10*(12*64/8);  // = # of 0.125" w fine encoder wheels in 10 feet
 
 // PID variables & initialization
 double dt;                            // time difference between encoders
-double    left_spd = 150;
+double    left_spd = 150;             // speeds determined by turn_around_micro.ino
 double   right_spd = 132;
 double desired_dt  = 0;               // desired time difference between encoders
 PID myPID(&dt, &right_spd, &desired_dt, 0.084457214, 7.712170356, 0.014842, DIRECT);
@@ -51,9 +53,10 @@ void loop() {
     myPID.Compute();
   }
   drive(0, 0);
-  delay(1000);
+  delay(1000);                // orient encoders, then delay one second
   attach_servos(0);
 }
+
 long read_encoders() {
   unsigned long t_right_pass, t_left_pass;
   long delta_t_pass;
