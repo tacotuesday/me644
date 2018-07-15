@@ -20,7 +20,7 @@ int  left_center_value = 1491;
 // encoder counter and desired travel distance
 volatile int cc_left;
 // = desired distance ft * (12 in/ft * 64 encoder_changes/rotation / 8 in/rotation)
-int distance = 10*(12*64/8);  // = # of 0.125" w fine encoder wheels in 10 feet
+int distance = 11*(12*64/8);  // = # of 0.125" w fine encoder wheels in 11 feet
 
 // PID variables & initialization
 double dt;                            // time difference between encoders
