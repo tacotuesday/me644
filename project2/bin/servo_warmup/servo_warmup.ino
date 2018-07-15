@@ -4,19 +4,19 @@
 
 Servo rServo, lServo;
 
-const byte rServoPin = 2;
-const byte lServoPin = 3;
+const byte rServoPin = 4;
+const byte lServoPin = 12;
 int rServoDrive = 1300;
 int lServoDrive = 1700;
 int servoInput;
 
 void setup() {
   rServo.attach(rServoPin);
-  rServo.writeMicroseconds(rServoDrive);
-
+  lServo.attach(lServoPin);
 }
 
 void loop() {
-  lServo.attach(lServoPin);
+
+  rServo.writeMicroseconds(rServoDrive);
   lServo.writeMicroseconds(lServoDrive);
 }

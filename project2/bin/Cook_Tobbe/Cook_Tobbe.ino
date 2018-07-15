@@ -8,8 +8,8 @@ Servo right_servo;
 Servo  left_servo;
 
 // pin definition
-int right_encoder_pin = 10;
 int  left_encoder_pin =  9;
+int right_encoder_pin = 10;
 int   right_servo_pin = 11;
 int    left_servo_pin = 12;
 
