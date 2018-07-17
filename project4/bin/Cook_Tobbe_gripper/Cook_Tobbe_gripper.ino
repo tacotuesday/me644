@@ -13,14 +13,14 @@ void setup() {
   Servo right_servo, left_servo;
   const byte right_servo_pin = ;
   const byte right_encoder_pin = ;
-  const int right_center_value = ;
-  const byte right_spd = ;
+  const int right_center_value = 1511;
+  const byte right_spd = 50;
   const byte left_servo_pin = ;
   const byte left_encoder_pin = ;
-  const int left_center_value = ;
-  const byte left_speed = ;
+  const int left_center_value = 1509;
+  const byte left_speed = 50;
   const byte grip_servo_pin = ;
-  const int grip_center_value = ;
+  const int grip_center_value = ;    // need to determine gripper center
 
   const byte turn_180 = 51;    // change based on results from turn_around_micro.ino calibration?
 
@@ -39,7 +39,7 @@ void setup() {
 // RX->store in variables
 // TODO: orient encoders based on rotation variables from seeker robot
 // TODO: recieve distance from seeker robot
-// RX millisecondsInCentimeters()->input distance into calculation
+// RX millisecondsInInches()->input distance into calculation
 // TODO: travel to flag
 // FOR i = (distance in centimeters, i++): drive(). Halt after distance.
 // TODO: grab flag
