@@ -3,35 +3,50 @@
 #include <SPI.h>
 #include "RF24.h"
 
+// Counter variables
+byte ats;
+int cc1;
+volatile int cc_left, cc_right;
+
+// Servo housekeeping declarations
+Servo right_servo, left_servo;
+const byte right_servo_pin = 12;
+const byte right_encoder_pin = 10;
+const int right_center_value = 1511;
+const byte right_spd = 50;
+const byte left_servo_pin = 11;
+const byte left_encoder_pin = 9;
+const int left_center_value = 1509;
+const byte left_speed = 50;
+const byte grip_servo_pin = 8;
+const int grip_center_value = ;    // need to determine gripper center
+
+const byte turn_180 = 52;    // change based on results from turn_around_micro.ino calibration?
+const byte turn_90 = 26;
+
+// These variables store RF-recieved values from the Seeker Robot.
+byte distance_to_flag_inches;
+int r_enc_flag_orient_count_out;   // Orients Gripper to match Seeker's angle of travel
+int l_enc_flag_orient_count_out;
+int r_enc_flag_orient_count_in;    // TODO: Eliminate redundant variables--these should be
+int l_enc_flag_orient_count_in;    // equal and opposite variables above. Write function?
+
 void setup() {
-  // Counter variables
-  byte ats;
-  int cc1;
-  volatile int cc_left, cc_right;
+  Serial.begin(115200);  // initialize serial communication
+  radio.begin();
+  radio.setPALevel(RF24_PA_LOW);
 
-  // Servo housekeeping declarations
-  Servo right_servo, left_servo;
-  const byte right_servo_pin = ;
-  const byte right_encoder_pin = ;
-  const int right_center_value = ;
-  const byte right_spd = ;
-  const byte left_servo_pin = ;
-  const byte left_encoder_pin = ;
-  const int left_center_value = ;
-  const byte left_speed = ;
-  const byte grip_servo_pin = ;
-  const int grip_center_value = ;
-
-  const byte turn_180 = 51;    // change based on results from turn_around_micro.ino calibration?
-
-  // These variables store RF-recieved values from the Seeker Robot.
-  byte distance_to_flag_in;
-  int r_enc_flag_orient_count_out;   // Orients Gripper to match Seeker's angle of travel
-  int l_enc_flag_orient_count_out;
-  int r_enc_flag_orient_count_in;    // TODO: Eliminate redundant variables--these should be
-  int l_enc_flag_orient_count_in;    // equal and opposite variables above. Write function?
-
+  // Open a writing and reading pipe on each radio, with opposite addresses
+  if(radioNumber){ radio.openWritingPipe(addresses[1]); radio.openReadingPipe(1,addresses[0]); }
+  else           { radio.openWritingPipe(addresses[0]); radio.openReadingPipe(1,addresses[1]); }
+  radio.startListening();
+  pinMode(right_encoder_pin, INPUT_PULLUP);
+  pinMode( left_encoder_pin, INPUT_PULLUP);
+  attachInterrupt( left_encoder_pin,  left_counter, CHANGE);
+  attachInterrupt(right_encoder_pin, right_counter, CHANGE);
+  attach_servos(1);                            // enable listening.
   orient_encoders();
+
 // TODO: move forward to spot that seeker robot initially occupied
 // drive() needs to be in a FOR loop?
   drive(,);
@@ -39,7 +54,7 @@ void setup() {
 // RX->store in variables
 // TODO: orient encoders based on rotation variables from seeker robot
 // TODO: recieve distance from seeker robot
-// RX millisecondsInCentimeters()->input distance into calculation
+// RX millisecondsInInches()->input distance into calculation
 // TODO: travel to flag
 // FOR i = (distance in centimeters, i++): drive(). Halt after distance.
 // TODO: grab flag
@@ -91,6 +106,6 @@ void  left_counter() { cc_left++; }
 void  right_counter() { cc_right++; }
 
 // Return the distance to flag in encoder window counts
-void distance_to_flag_enc(int distance_to_flag_in) {
-  return distance_to_flag_in*(12*64/8);
+void distance_to_flag_enc(int distance_to_flag_inches) {
+  return distance_to_flag_inches*(12*64/8);
 }
