@@ -22,7 +22,7 @@ int right_center_value = 1515;
 int  left_center_value = 1501;
 
 // initialize variables, counters, and desired travel distance
-// = desired distance ft * (12 in/ft * 64 encoder_changes/rotation / 8 in/rotation) 
+// = desired distance ft * (12 in/ft * 64 encoder_changes/rotation / 8 in/rotation)
 int distance = 4*(12*64/8);       // = # of 0.125" w fine encoder wheels
 int turn_180 = 52;                // # encoder pulses for 180 degree turn
 int turn_90  = 26;                // # encoder pulses for  90 degree turn
@@ -41,7 +41,7 @@ void setup() {
   Serial.begin(115200);  // initialize serial communication
    radio.begin();
    radio.setPALevel(RF24_PA_LOW);
-  
+
   // Open a writing and reading pipe on each radio, with opposite addresses
   if(radioNumber){ radio.openWritingPipe(addresses[1]); radio.openReadingPipe(1,addresses[0]); }
   else           { radio.openWritingPipe(addresses[0]); radio.openReadingPipe(1,addresses[1]); }
@@ -64,10 +64,10 @@ void loop() {
     while (radio.available()) {                   // While there is data ready
       radio.read( &inches, sizeof(unsigned long) );  // Get the payload
     }
-    
+
     // open gripper
     gripper(0); delay(3000);
-    
+
     // forward toward wall
     while (cc_left < distance) {
        drive(right_spd, left_spd); dt = read_encoders(); myPID.Compute();
@@ -77,7 +77,7 @@ void loop() {
     while (cc_left < turn_90-1 || cc_right < turn_90-1) {
       drive(right_spd, -left_spd); dt = read_encoders(); myPID.Compute();
     }; drive(0, 0); orient_encoders(); cc_left = 0; cc_right = 0; delay(1000);
-    
+
     // forward toward flag
     while(cc_left < (inches-6.0)*(64/8)) {
        drive( right_spd,  left_spd); dt = read_encoders(); myPID.Compute();
@@ -127,13 +127,13 @@ long read_encoders() {
   t_right_pass = millis();
   while (digitalRead(right_encoder_pin) != right_value) { }
   t_right_pass = millis() - t_right_pass;
-  
+
   int left_value = digitalRead(left_encoder_pin);
   while (digitalRead(left_encoder_pin)  == left_value) { }
   t_left_pass  = millis();
   while (digitalRead(left_encoder_pin)  != left_value) { }
-  t_left_pass  = millis() - t_left_pass; 
-  
+  t_left_pass  = millis() - t_left_pass;
+
   delta_t_pass = t_left_pass - t_right_pass;
   return delta_t_pass;
 }

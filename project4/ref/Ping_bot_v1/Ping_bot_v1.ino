@@ -23,7 +23,7 @@ int right_center_value = 1484;
 int  left_center_value = 1504;
 
 // initialize variables, counters, and desired travel distance
-// = desired distance ft * (12 in/ft * 64 encoder_changes/rotation / 8 in/rotation) 
+// = desired distance ft * (12 in/ft * 64 encoder_changes/rotation / 8 in/rotation)
 int distance = 4*(12*64/8);   // = # of 0.125" w fine encoder wheels
 int  runonce = 1;             // flag to run loop once
 volatile  int cc_left;        // left encoder counter
@@ -40,7 +40,7 @@ void setup() {
   Serial.begin(115200);         // initialize USB communication
    radio.begin();
    radio.setPALevel(RF24_PA_LOW);
-  
+
   // Open a writing and reading pipe on each radio, with opposite addresses
   if(radioNumber){ radio.openWritingPipe(addresses[1]); radio.openReadingPipe(1,addresses[0]); }
   else           { radio.openWritingPipe(addresses[0]); radio.openReadingPipe(1,addresses[1]); }
@@ -48,7 +48,7 @@ void setup() {
 
   myPID.SetMode(AUTOMATIC);   //turn on PID
   myPID.SetOutputLimits( right_spd - 30, right_spd + 30 );
-  
+
   pinMode(right_encoder_pin, INPUT_PULLUP);
   pinMode( left_encoder_pin, INPUT_PULLUP);
   attachInterrupt( left_encoder_pin,  left_counter, CHANGE);
@@ -60,7 +60,7 @@ void loop() {
     attach_servos(1);
     orient_encoders();
     delay(5000);
-    
+
     cc_left = 0;
     while (cc_left < distance) {
       drive(right_spd, left_spd);
@@ -70,7 +70,7 @@ void loop() {
       myPID.Compute();
     }
     drive(0, 0); delay(1000);
-  
+
     look(160);
     inches = distance_measure();
     Serial.print("inches = "); Serial.println(inches, DEC);
@@ -109,14 +109,14 @@ long read_encoders() {
   t_right_pass = millis();
   while (digitalRead(right_encoder_pin) != right_value) { }
   t_right_pass = millis() - t_right_pass;
-  
+
   int left_value = digitalRead(left_encoder_pin);
   while (digitalRead(left_encoder_pin)  == left_value) { }
   t_left_pass  = millis();
   while (digitalRead(left_encoder_pin)  != left_value) { }
-  t_left_pass  = millis() - t_left_pass; 
-  
-  return delta_t_pass = t_left_pass - t_right_pass; 
+  t_left_pass  = millis() - t_left_pass;
+
+  return delta_t_pass = t_left_pass - t_right_pass;
 }
 
 void orient_encoders() {
