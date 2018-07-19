@@ -29,7 +29,7 @@ void setup() {
   attachInterrupt(  left_encoder_pin,  left_counter, CHANGE);
 
   attach_servos(1);
-  orient_encoders();
+  // orient_encoders();
   delay(2000);                    // time delay to situate robot
 }
 
@@ -48,16 +48,16 @@ void loop() {
   if (cc > 1) { attach_servos(0); }
 }
 
-void orient_encoders() {
-  int right_value = digitalRead(right_encoder_pin);
-  drive(10 - 20*right_value, 0);
-  while (digitalRead(right_encoder_pin) == right_value) { }
-  drive(0, 0);
-  int left_value = digitalRead(left_encoder_pin);
-  drive(0, 20*left_value - 10);
-  while (digitalRead(left_encoder_pin) == left_value) { }
-  drive(0, 0);
-}
+// void orient_encoders() {
+//   int right_value = digitalRead(right_encoder_pin);
+//   drive(10 - 20*right_value, 0);
+//   while (digitalRead(right_encoder_pin) == right_value) { }
+//   drive(0, 0);
+//   int left_value = digitalRead(left_encoder_pin);
+//   drive(0, 20*left_value - 10);
+//   while (digitalRead(left_encoder_pin) == left_value) { }
+//   drive(0, 0);
+// }
 
 void attach_servos(int ats) {
   if ( ats == 0) {
