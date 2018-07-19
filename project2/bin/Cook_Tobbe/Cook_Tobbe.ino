@@ -1,3 +1,5 @@
+// Cook_Tobbe.ino -- Project 2 production code by Grafton Cook and Joe Cook_Tobbe
+
 #include <Servo.h>
 #include <PID_v1.h>
 
@@ -6,8 +8,8 @@ Servo right_servo;
 Servo  left_servo;
 
 // pin definition
-int right_encoder_pin = 10;
 int  left_encoder_pin =  9;
+int right_encoder_pin = 10;
 int   right_servo_pin = 11;
 int    left_servo_pin = 12;
 
@@ -18,12 +20,12 @@ int  left_center_value = 1491;
 // encoder counter and desired travel distance
 volatile int cc_left;
 // = desired distance ft * (12 in/ft * 64 encoder_changes/rotation / 8 in/rotation)
-int distance = 10*(12*64/8);  // = # of 0.125" w fine encoder wheels
+int distance = 12*(12*64/8);  // = # of 0.125" w fine encoder wheels in 12 feet
 
 // PID variables & initialization
 double dt;                            // time difference between encoders
-double    left_spd = 150;
-double   right_spd = 132;
+double    left_spd = 64;             // speeds determined by turn_around_micro.ino
+double   right_spd = 50;
 double desired_dt  = 0;               // desired time difference between encoders
 PID myPID(&dt, &right_spd, &desired_dt, 0.084457214, 7.712170356, 0.014842, DIRECT);
 
@@ -36,7 +38,7 @@ void setup() {
   pinMode( left_encoder_pin, INPUT_PULLUP);
   attachInterrupt( left_encoder_pin,  left_counter, CHANGE);
   attach_servos(1);
-  orient_encoders();
+  // waorient_encoders();
   delay(1000);
 }
 
@@ -51,9 +53,10 @@ void loop() {
     myPID.Compute();
   }
   drive(0, 0);
-  delay(1000);
+  delay(1000);                // orient encoders, then delay one second
   attach_servos(0);
 }
+
 long read_encoders() {
   unsigned long t_right_pass, t_left_pass;
   long delta_t_pass;
