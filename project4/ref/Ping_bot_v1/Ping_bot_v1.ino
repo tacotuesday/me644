@@ -56,11 +56,12 @@ void setup() {
 
 void loop() {
   if (runonce == 1) {
-    look(75);
+    look(75);            // Orient the PING))) straight ahead.
     attach_servos(1);
     orient_encoders();
-    delay(5000);
+    delay(5000);         // Wait five seconds.
 
+    // PID block
     cc_left = 0;
     while (cc_left < distance) {
       drive(right_spd, left_spd);
@@ -69,13 +70,13 @@ void loop() {
       Serial.print(right_spd ); Serial.println(";");
       myPID.Compute();
     }
-    drive(0, 0); delay(1000);
+    drive(0, 0); delay(1000);    // Stop in front of flag and wait
 
-    look(160);
-    inches = distance_measure();
+    look(160);    // Orient the PING))) 90 degrees to the left.
+    inches = distance_measure();    // Measure the distance to the flag in inches.
     Serial.print("inches = "); Serial.println(inches, DEC);
     delay(100);
-    if (!radio.write( &inches, sizeof(unsigned long) )){ Serial.println(F("failed")); }
+    if (!radio.write( &inches, sizeof(unsigned long) )) { Serial.println(F("failed")); }
     cc_left = 0;
     while (cc_left < 185) { drive(-65, -50); }
     drive(0, 0); delay(1000); attach_servos(0); runonce = 0;
