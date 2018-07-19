@@ -17,11 +17,11 @@ void setup() {
   pinMode(speed_pin, INPUT_PULLUP);
   Serial.begin(9600);
   test_servo.attach(servo_pin);
-  attachInterrupt(0, read_encoder, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(2), read_encoder, CHANGE);
   // Experimentally-determined t_pass at max motor speed = 20ms.
   // This is for ONE specific servo: modify the below value based on calibration
   // curve for the servo motor being evaluated.
-  while(measured_t_pass >= 19) {
+  while(measured_t_pass >= 17) {
     test_time = millis(); // Start timing the servo
     test_servo.writeMicroseconds(center_value);
     measured_t_pass = read_encoder(); // Get time for one spoke pass

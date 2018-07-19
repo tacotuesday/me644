@@ -4,16 +4,16 @@
 Servo right_servo, left_servo;
 
 // pin definition
-int  left_encoder_pin =  9;
-int right_encoder_pin = 10;
-int    left_servo_pin = 12;
-int   right_servo_pin = 11;
+int  left_encoder_pin = 10;
+int right_encoder_pin =  9;
+int    left_servo_pin = 11;
+int   right_servo_pin = 12;
 
 // servo center values & speeds
-int right_center_value = 1469;
-int  left_center_value = 1491;
-double  left_spd       = 164;
-double right_spd       = 150;
+int right_center_value = 1511;
+int  left_center_value = 1509;
+double  left_spd       =  92;
+double right_spd       = 100;
 
 // encoder counter and desired travel distance
 volatile int cc_left, cc_right;   // encoder counters
@@ -29,7 +29,7 @@ void setup() {
   attachInterrupt(  left_encoder_pin,  left_counter, CHANGE);
 
   attach_servos(1);
-  // orient_encoders();
+  orient_encoders();
   delay(2000);                    // time delay to situate robot
 }
 
@@ -48,16 +48,16 @@ void loop() {
   if (cc > 1) { attach_servos(0); }
 }
 
-// void orient_encoders() {
-//   int right_value = digitalRead(right_encoder_pin);
-//   drive(10 - 20*right_value, 0);
-//   while (digitalRead(right_encoder_pin) == right_value) { }
-//   drive(0, 0);
-//   int left_value = digitalRead(left_encoder_pin);
-//   drive(0, 20*left_value - 10);
-//   while (digitalRead(left_encoder_pin) == left_value) { }
-//   drive(0, 0);
-// }
+void orient_encoders() {
+  int right_value = digitalRead(right_encoder_pin);
+  drive(10 - 20*right_value, 0);
+  while (digitalRead(right_encoder_pin) == right_value) { }
+  drive(0, 0);
+  int left_value = digitalRead(left_encoder_pin);
+  drive(0, 20*left_value - 10);
+  while (digitalRead(left_encoder_pin) == left_value) { }
+  drive(0, 0);
+}
 
 void attach_servos(int ats) {
   if ( ats == 0) {

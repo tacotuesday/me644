@@ -12,7 +12,7 @@ Servo testServo;
 const byte servoPin = 11;
 const byte speedPin = 10;
 int offsetLockout = 15;  // Adjust this based on how your servo acts at center.
-int defineCenter = 1700;  // Use center_check.ino to find this value for servo.
+int defineCenter = 1511;  // Use center_check.ino to find this value for servo.
 int servoInput;
 unsigned long measuredTPass;
 unsigned long delayLength = 500;  // Delay in microseconds: adjust accordingly.
