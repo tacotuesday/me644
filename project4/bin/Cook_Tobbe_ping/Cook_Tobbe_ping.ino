@@ -27,6 +27,7 @@ int  left_center_value = 1504;    // NEW SERVOS
 // int  runonce = 1;          // Obsolete: moving main code from loop() to setup()
 volatile  int cc_left;        // left encoder counter
 unsigned long inches;         // distance to wall
+float cmd[];                  // May need to change to int if Joe can't handle a float
 
 // PID variables & initialization. Test for feasibility, but may not be needed.
 double dt;                // time difference between encoders
@@ -58,6 +59,7 @@ void setup() {
   // PING subroutine: If distance change greater than error threshold, save encoder counts.
   // Convert encoder count to inches and add six to find center of bridge. Save as cmd[0].
   // Then drive six inches forward.
+  find_wall();
   // TODO: Code block to complete Step 2: Drive to bridge x-coordinate.
   // Reorient PING to left to reduce error from rear wall!
   // Reuse code from step one to count encoders to edge of the wall.
@@ -74,31 +76,8 @@ void setup() {
 }
 
 void loop() {
-  // if (runonce == 1) {
-  //   look(75);
-  //   attach_servos(1);
-  //   orient_encoders();
-  //   delay(5000);
-  //
-  //   cc_left = 0;
-  //   while (cc_left < distance) {
-  //     drive(right_spd, left_spd);
-  //     dt = read_encoders();
-  //     Serial.print(   cc_left); Serial.print(" "); Serial.print(dt); Serial.print(" ");
-  //     Serial.print(right_spd ); Serial.println(";");
-  //     myPID.Compute();
-  //   }
-  //   drive(0, 0); delay(1000);
-  //
-  //   look(160);
-  //   inches = distance_measure();
-  //   Serial.print("inches = "); Serial.println(inches, DEC);
-  //   delay(100);
-  //   if (!radio.write( &inches, sizeof(unsigned long) )){ Serial.println(F("failed")); }
-  //   cc_left = 0;
-  //   while (cc_left < 185) { drive(-65, -50); }
-  //   drive(0, 0); delay(1000); attach_servos(0); runonce = 0;
-  // }
+  // INSERT LOOPING TX CODE HERE]
+  // https://playground.arduino.cc/InterfacingWithHardware/Nrf2401
 }
 
 unsigned long find_wall() {
@@ -123,14 +102,12 @@ unsigned long find_wall() {
 
     // Serial debugging for non-headless mode.
     Serial.print(inches);
-    Serial.print(" in,    ");
-    Serial.print(cm);
-    Serial.print(" cm");
-    Serial.println();
+    Serial.println(" in,    ");
 
-    delay(100);
+    delay(50);
     last_inches = inches;
     return last_inches;
+    drive(50,50);
   }
 }
 
