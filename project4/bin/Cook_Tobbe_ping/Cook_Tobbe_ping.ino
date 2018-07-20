@@ -24,7 +24,6 @@ int  left_center_value = 1504;    // NEW SERVOS
 
 // initialize variables, counters, and desired travel distance
 // = desired distance ft * (12 in/ft * 64 encoder_changes/rotation / 8 in/rotation)
-int distance = 4*(12*64/8);   // = # of 0.125" w fine encoder wheels
 // int  runonce = 1;          // Obsolete: moving main code from loop() to setup()
 volatile  int cc_left;        // left encoder counter
 unsigned long inches;         // distance to wall
