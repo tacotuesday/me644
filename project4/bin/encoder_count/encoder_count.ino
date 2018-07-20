@@ -1,4 +1,4 @@
-                                            #include <Servo.h>
+#include <Servo.h>
 
 // create servo object
 Servo right_servo, left_servo;
@@ -61,5 +61,5 @@ void drive(double right_speed, double left_speed) {
 }
 
 void right_counter() { cc_right++; }
-void  left_counter() { cc_left++; enc_count = cc_left;}
+void  left_counter() { cc_left++; /*enc_count = cc_left;*/}
 // int count_left() {cc_left++; return left_count;}
