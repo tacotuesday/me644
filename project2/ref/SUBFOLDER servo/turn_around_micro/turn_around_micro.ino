@@ -4,16 +4,18 @@
 Servo right_servo, left_servo;
 
 // pin definition
-int  left_encoder_pin =  9;
-int right_encoder_pin = 10;
-int    left_servo_pin = 12;
-int   right_servo_pin = 11;
+const byte   right_servo_pin = 12;
+const byte    left_servo_pin = 10;
+const byte right_encoder_pin = 11;
+const byte  left_encoder_pin =  9;
+const byte          Ping_pin =  8;
+const byte    Ping_servo_pin =  7;
 
 // servo center values & speeds
-int right_center_value = 1469;
-int  left_center_value = 1491;
-double  left_spd       = 164;
-double right_spd       = 150;
+int right_center_value = 1498;
+int  left_center_value = 1486;
+double  left_spd       = 50;
+double right_spd       = 55;
 
 // encoder counter and desired travel distance
 volatile int cc_left, cc_right;   // encoder counters
@@ -31,6 +33,7 @@ void setup() {
   attach_servos(1);
   // orient_encoders();
   delay(2000);                    // time delay to situate robot
+  Serial.begin(9600);
 }
 
 void loop() {
@@ -46,18 +49,22 @@ void loop() {
   drive(0, 0);
   cc++;
   if (cc > 1) { attach_servos(0); }
+  Serial.print("cc_left: ");
+  Serial.print(cc_left);
+  Serial.print("    cc_right: ");
+  Serial.println(cc_right);
 }
 
-// void orient_encoders() {
-//   int right_value = digitalRead(right_encoder_pin);
-//   drive(10 - 20*right_value, 0);
-//   while (digitalRead(right_encoder_pin) == right_value) { }
-//   drive(0, 0);
-//   int left_value = digitalRead(left_encoder_pin);
-//   drive(0, 20*left_value - 10);
-//   while (digitalRead(left_encoder_pin) == left_value) { }
-//   drive(0, 0);
-// }
+void orient_encoders() {
+  int right_value = digitalRead(right_encoder_pin);
+  drive(10 - 20*right_value, 0);
+  while (digitalRead(right_encoder_pin) == right_value) { }
+  drive(0, 0);
+  int left_value = digitalRead(left_encoder_pin);
+  drive(0, 20*left_value - 10);
+  while (digitalRead(left_encoder_pin) == left_value) { }
+  drive(0, 0);
+}
 
 void attach_servos(int ats) {
   if ( ats == 0) {
@@ -65,8 +72,8 @@ void attach_servos(int ats) {
      left_servo.detach();
   }
   else {
+    left_servo.attach( left_servo_pin);
     right_servo.attach(right_servo_pin);
-     left_servo.attach( left_servo_pin);
   }
 }
 

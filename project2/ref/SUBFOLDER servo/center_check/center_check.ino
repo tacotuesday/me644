@@ -8,7 +8,7 @@ Servo test_servo;
 
 // pin definition
 int right_servo_pin = 12;
-// int  left_servo_pin = 11;
+//int  left_servo_pin = 11;
 int speed_pin = 11;
 int spd;
 int cc1;
@@ -42,10 +42,10 @@ void loop() {
         test_servo.attach(right_servo_pin);
         Serial.println("");
       break;
-      case 2:
-        Serial.println("TESTING LEFT SERVO");
-        test_servo.attach(left_servo_pin);
-      break;
+      // case 2:
+      //   Serial.println("TESTING LEFT SERVO");
+      //   test_servo.attach(left_servo_pin);
+      // break;
       case 3:  center_value = center_value + 1;  break;
       case 4:  center_value = center_value - 1;  break;
       case 5:  center_value = center_value + 10; break;
@@ -53,11 +53,11 @@ void loop() {
     }
     Serial.print( "center_value = ");
     Serial.println(center_value);
-    spd = 0;
-    for (cc1 = 0; cc1 < 16; cc1++) {
-      spd = spd + pulseIn(speed_pin, HIGH);
-    }
-    spd = spd/16;
+    // spd = 0;
+    // for (cc1 = 0; cc1 < 16; cc1++) {
+    //   spd = spd + pulseIn(speed_pin, HIGH);
+    // }
+    // spd = spd/16;
     Serial.print(spd);
     Serial.println(" (us)");
   }

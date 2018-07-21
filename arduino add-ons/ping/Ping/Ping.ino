@@ -15,7 +15,7 @@
    modified 30 Aug 2011 by Tom Igoe
    This example code is in the public domain. */
 
-const int pingPin = 8;  // sensor signal pin
+const int pingPin = 4;  // sensor signal pin
 // establish variables for ping duration distance (in., cm)
 unsigned long duration, inches, cm;
 

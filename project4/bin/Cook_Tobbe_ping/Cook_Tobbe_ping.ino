@@ -12,11 +12,11 @@ Servo right_servo, left_servo, Ping_servo;
 
 // pin definition
 const byte   right_servo_pin = 12;
-const byte    left_servo_pin = 13;
-const byte right_encoder_pin = 10;
-const byte  left_encoder_pin = 11;
-const byte          Ping_pin =  8;
-const byte    Ping_servo_pin =  9;
+const byte    left_servo_pin = 10;
+const byte right_encoder_pin = 11;
+const byte  left_encoder_pin =  9;
+const byte    Ping_servo_pin =  8;
+const byte          Ping_pin =  7;
 
 // servo center values
 int right_center_value = 1484;    // CHANGE THESE VALUES AFTER TESTING
@@ -27,7 +27,7 @@ int  left_center_value = 1504;    // NEW SERVOS
 // int  runonce = 1;          // Obsolete: moving main code from loop() to setup()
 volatile  int cc_left;        // left encoder counter
 unsigned long inches;         // distance to wall
-float cmd[];                  // May need to change to int if Joe can't handle a float
+int cmd[];                  // May need to change to int if Joe can't handle a float
 
 // PID variables & initialization. Test for feasibility, but may not be needed.
 double dt;                // time difference between encoders
@@ -76,38 +76,16 @@ void setup() {
 }
 
 void loop() {
-  // INSERT LOOPING TX CODE HERE]
+  // INSERT LOOPING TX CODE HERE
   // https://playground.arduino.cc/InterfacingWithHardware/Nrf2401
 }
 
 unsigned long find_wall() {
   inches = 150;
   while (inches > 110) {
-    // Trigger the PING))).
-    pinMode(pingPin, OUTPUT);
-    digitalWrite(pingPin, LOW);
-    delayMicroseconds(2);
-    digitalWrite(pingPin, HIGH);
-    delayMicroseconds(5);
-    digitalWrite(pingPin, LOW);
-
-    // Read the signal from the PING))): a HIGH pulse whose duration is the time
-    // (in microseconds) from the TX to RX echo off object.
-    pinMode(pingPin, INPUT);
-    duration = pulseIn(pingPin, HIGH);
-
-    // Time to distance conversion.
-    inches = microsecondsToInches(duration);
-    cm     = microsecondsToCentimeters(duration);
-
-    // Serial debugging for non-headless mode.
-    Serial.print(inches);
-    Serial.println(" in,    ");
-
-    delay(50);
-    last_inches = inches;
-    return last_inches;
-    drive(50,50);
+    drive(left_spd, right_spd);
+    inches = distance_measure();
+    return inches;
   }
 }
 

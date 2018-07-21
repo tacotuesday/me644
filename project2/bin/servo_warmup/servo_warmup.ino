@@ -4,10 +4,10 @@
 
 Servo rServo, lServo;
 
-const byte rServoPin = 4;
-const byte lServoPin = 12;
-int rServoDrive = 1300;
-int lServoDrive = 1700;
+const byte rServoPin = 12;
+const byte lServoPin = 10;
+int rServoDrive = 1400;
+int lServoDrive = 1600;
 int servoInput;
 
 void setup() {
