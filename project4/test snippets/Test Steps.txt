@@ -4,7 +4,7 @@
 4. Drive straight forward, returning encoder values, and turn 90 degrees
 5. Drive straight forward, returning encoder values, turn 90 degrees, drive forward counting encoder values
 6. Drive straight forward, stop on command from an external source
-7. Determine Ping servo left/center/right values
+7. [DONE] Determine Ping servo left/center/right values
 8. Ping reads distances
 9. Ping returns distance in a function
 10. Ping saves a variable containing distance
