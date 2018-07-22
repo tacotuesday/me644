@@ -17,7 +17,6 @@ int          right_spd = 55;
 
 void setup() {
   attach_servos(1);
-  Serial.begin(9600);
 }
 
 void loop() {

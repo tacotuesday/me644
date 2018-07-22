@@ -19,8 +19,8 @@ const byte    Ping_servo_pin =  8;
 const byte          Ping_pin =  7;
 
 // servo center values
-int right_center_value = 1484;
-int  left_center_value = 1504;
+int right_center_value = 1499;
+int  left_center_value = 1486;
 
 // initialize variables, counters, and desired travel distance
 // = desired distance ft * (12 in/ft * 64 encoder_changes/rotation / 8 in/rotation)
@@ -33,8 +33,8 @@ unsigned long inches;         // distance to wall
 double dt;                // time difference between encoders
 double desired_dt  = 0;   // desired time difference between encoders
 double    left_spd = 50;
-double   right_spd = 50;
-PID myPID(&dt, &right_spd, &desired_dt, .01, 1, 0, DIRECT);
+double   right_spd = 56;
+// PID myPID(&dt, &right_spd, &desired_dt, 0.084457214, 7.712170356, 0.014842, DIRECT);
 
 void setup() {
   Serial.begin(115200);         // initialize USB communication
@@ -56,23 +56,16 @@ void setup() {
 
 void loop() {
   if (runonce == 1) {
-    look(75);            // Orient the PING))) straight ahead.
+    look(96);            // Orient the PING))) straight ahead.
     attach_servos(1);
-    orient_encoders();
-    delay(5000);         // Wait five seconds.
+    // orient_encoders();
+    delay(2000);         // Wait two seconds.
 
     // PID block
     cc_left = 0;
-    while (cc_left < distance) {
-      drive(right_spd, left_spd);
-      // dt = read_encoders();
-      // Serial.print(   cc_left); Serial.print(" "); Serial.print(dt); Serial.print(" ");
-      // Serial.print(right_spd ); Serial.println(";");
-      // myPID.Compute();
-    }
-    drive(0, 0); delay(1000);    // Stop in front of flag and wait
-
-    look(160);    // Orient the PING))) 90 degrees to the left.
+    distance_measure()
+    drive(right_spd, left_spd);
+    look(180);    // Orient the PING))) 90 degrees to the left.
     inches = distance_measure();    // Measure the distance to the flag in inches.
     Serial.print("inches = "); Serial.println(inches, DEC);
     delay(100);

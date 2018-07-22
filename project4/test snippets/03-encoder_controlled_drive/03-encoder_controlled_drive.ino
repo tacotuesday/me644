@@ -17,7 +17,7 @@ int          right_spd = 55;
 
 volatile  int cc_left, cc_right;       // encoder counters
 int cc;                           // # times out and back
-int distance = 3*(12*64/8);  // = # of 0.125" w fine encoder wheels = 3 foot distance
+int distance = 1*(12*64/8);  // = # of 0.125" w fine encoder wheels = 3 foot distance
 
 void setup() {
   Serial.begin(9600);
@@ -47,8 +47,7 @@ void drive(int right_speed, int left_speed) {
 
 void attach_servos(int ats) {
   if ( ats == 0) { right_servo.detach(); left_servo.detach(); }
-  else { right_servo.attach(right_servo_pin); left_servo.attach( left_servo_pin);
-  Ping_servo.attach(Ping_servo_pin); }
+  else { right_servo.attach(right_servo_pin); left_servo.attach( left_servo_pin); }
 }
 
 void right_counter() { cc_right++; }

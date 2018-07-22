@@ -1,4 +1,4 @@
-1. Drive straight forward
+1. [DONE] Drive straight forward
 2. Drive straight forward, returning encoder values
 3. Drive straight forward, returning encoder values, and stop based on predefined encoder count
 4. Drive straight forward, returning encoder values, and turn 90 degrees

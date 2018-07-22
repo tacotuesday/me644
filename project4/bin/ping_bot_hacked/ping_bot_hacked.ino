@@ -19,22 +19,26 @@ const byte    Ping_servo_pin =  8;
 const byte          Ping_pin =  7;
 
 // servo center values
-int right_center_value = 1484;
-int  left_center_value = 1504;
+int right_center_value = 1499;
+int  left_center_value = 1486;
 
 // initialize variables, counters, and desired travel distance
 // = desired distance ft * (12 in/ft * 64 encoder_changes/rotation / 8 in/rotation)
-int distance = 4*(12*64/8);   // = # of 0.125" w fine encoder wheels
-int  runonce = 1;             // flag to run loop once
-volatile  int cc_left;        // left encoder counter
-unsigned long inches;         // distance to wall
+int distance = 1*(12*64/8);      // = # of 0.125" w fine encoder wheels
+int half_dist = (1*(12*64/8))/2; // used to go forward six inches
+int  runonce = 1;                // flag to run loop once
+volatile  int cc_left;           // left encoder counter
+volatile int feet_traveled;
+volatile int current_dist;
+unsigned long inches;            // distance to wall
+
 
 // PID variables & initialization
 double dt;                // time difference between encoders
 double desired_dt  = 0;   // desired time difference between encoders
 double    left_spd = 50;
-double   right_spd = 50;
-PID myPID(&dt, &right_spd, &desired_dt, .01, 1, 0, DIRECT);
+double   right_spd = 56;
+// PID myPID(&dt, &right_spd, &desired_dt, 0.084457214, 7.712170356, 0.014842, DIRECT);
 
 void setup() {
   Serial.begin(115200);         // initialize USB communication
@@ -56,33 +60,57 @@ void setup() {
 
 void loop() {
   if (runonce == 1) {
-    look(75);            // Orient the PING))) straight ahead.
+    look(96);            // Orient the PING))) straight ahead.
     attach_servos(1);
-    orient_encoders();
-    delay(5000);         // Wait five seconds.
+    // orient_encoders();
+    delay(2000);         // Wait two seconds.
 
     // PID block
     cc_left = 0;
-    while (cc_left < distance) {
-      drive(right_spd, left_spd);
-      // dt = read_encoders();
-      // Serial.print(   cc_left); Serial.print(" "); Serial.print(dt); Serial.print(" ");
-      // Serial.print(right_spd ); Serial.println(";");
-      // myPID.Compute();
-    }
-    drive(0, 0); delay(1000);    // Stop in front of flag and wait
-
-    look(160);    // Orient the PING))) 90 degrees to the left.
-    inches = distance_measure();    // Measure the distance to the flag in inches.
+    // while (cc_left < distance) {
+    //   drive(right_spd, left_spd);
+    //   dt = read_encoders();
+    //   Serial.print(   cc_left); Serial.print(" "); Serial.print(dt); Serial.print(" ");
+    //   Serial.print(right_spd ); Serial.println(";");
+    //   myPID.Compute();
+    // }
+    // drive(0, 0); delay(1000);    // Stop in front of flag and wait
+    current_dist = 0;
+    look(180);    // Orient the PING))) 90 degrees to the left.
+    inches = distance_measure();
     Serial.print("inches = "); Serial.println(inches, DEC);
-    delay(100);
-    if (!radio.write( &inches, sizeof(unsigned long) )) { Serial.println(F("failed")); }
-    cc_left = 0;
-    while (cc_left < 185) { drive(-65, -50); }
-    drive(0, 0); delay(1000); attach_servos(0); runonce = 0;
+    if (inches > 45) {
+      one_foot_forward();
+      current_dist = ++current_dist;
+      Serial.print("current_dist: ");
+      Serial.println(current_dist);
+      inches = distance_measure();    // Measure the distance to the flag in inches.
+      Serial.print("inches = "); Serial.println(inches, DEC);
+      delay(100);
+    }
+    // one_foot_forward();
+    // current_dist = ++current_dist;
+    // Serial.print("current_dist: ");
+    // Serial.println(current_dist);
+    // inches = distance_measure();    // Measure the distance to the flag in inches.
+    // Serial.print("inches = "); Serial.println(inches, DEC);
+    // delay(100);
+    // if (!radio.write( &inches, sizeof(unsigned long) )) { Serial.println(F("failed")); }
+    // cc_left = 0;
+    // while (cc_left < 185) { drive(-65, -50); }
+    // drive(0, 0); delay(1000);
+    attach_servos(0); runonce = 0;
   }
 }
 
+void one_foot_forward() {
+  int distance = 1*(12*64/8);
+  int travel;
+  while (cc_left < distance) {
+    drive(right_spd, left_spd);
+  }
+  drive(0, 0); delay(1000);
+}
 unsigned long distance_measure() {
   pinMode(       Ping_pin, OUTPUT);
   digitalWrite(  Ping_pin, LOW);
