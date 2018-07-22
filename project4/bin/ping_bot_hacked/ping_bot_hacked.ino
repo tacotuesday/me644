@@ -6,11 +6,12 @@
 bool radioNumber = 0;   // Set this radio as radio number 0 or 1
 RF24 radio(6,7);        // Set up nRF24L01 radio on SPI bus plus CE & CSN pins
 byte addresses[][6] = {"1Node","2Node"};
+int cmd[4] = {0};
 
 // create servo object to control a servo
 Servo right_servo, left_servo, Ping_servo;
 
-// pin definition
+// Pin Definition
 const byte   right_servo_pin = 12;
 const byte    left_servo_pin = 10;
 const byte right_encoder_pin = 11;
@@ -21,17 +22,21 @@ const byte          Ping_pin =  7;
 // servo center values
 int right_center_value = 1499;
 int  left_center_value = 1486;
+int Ping_center_value = 96;
+int Ping_left_value = 180;
+int Ping_right_value = 6;
+
 
 // initialize variables, counters, and desired travel distance
 // = desired distance ft * (12 in/ft * 64 encoder_changes/rotation / 8 in/rotation)
+byte runonce = 1;                // flag to run loop once
 int distance = 1*(12*64/8);      // = # of 0.125" w fine encoder wheels
 int half_dist = (1*(12*64/8))/2; // used to go forward six inches
-int  runonce = 1;                // flag to run loop once
-volatile  int cc_left;           // left encoder counter
+long duration;
+unsigned long inches;            // distance to wall
+volatile int cc_left, cc_right;           // left encoder counter
 volatile int feet_traveled;
 volatile int current_dist;
-unsigned long inches;            // distance to wall
-
 
 // PID variables & initialization
 double dt;                // time difference between encoders
@@ -50,52 +55,34 @@ void setup() {
   else           { radio.openWritingPipe(addresses[0]); radio.openReadingPipe(1,addresses[1]); }
   radio.stopListening();                            // stop listening to enable sending.
 
-  // myPID.SetMode(AUTOMATIC);   //turn on PID
-  // myPID.SetOutputLimits( right_spd - 30, right_spd + 30 );
+  myPID.SetMode(AUTOMATIC);   //turn on PID
+  myPID.SetOutputLimits( right_spd - 30, right_spd + 30 );
 
   pinMode(right_encoder_pin, INPUT_PULLUP);
   pinMode( left_encoder_pin, INPUT_PULLUP);
   attachInterrupt( left_encoder_pin,  left_counter, CHANGE);
+  attachInterrupt( right_encoder_pin, right_counter, CHANGE);
 }
 
 void loop() {
   if (runonce == 1) {
-    look(96);            // Orient the PING))) straight ahead.
+    look(Ping_center_value);            // Orient the PING))) straight ahead.
     attach_servos(1);
-    // orient_encoders();
-    delay(2000);         // Wait two seconds.
+    delay(50);
+    orient_encoders();
+    delay(50);
+    cc_left = 0; current_dist = 0;
+    look(Ping_left_value);    // Orient the PING))) 90 degrees to the left.
 
-    // PID block
     cc_left = 0;
-    // while (cc_left < distance) {
-    //   drive(right_spd, left_spd);
-    //   dt = read_encoders();
-    //   Serial.print(   cc_left); Serial.print(" "); Serial.print(dt); Serial.print(" ");
-    //   Serial.print(right_spd ); Serial.println(";");
-    //   myPID.Compute();
-    // }
-    // drive(0, 0); delay(1000);    // Stop in front of flag and wait
-    current_dist = 0;
-    look(180);    // Orient the PING))) 90 degrees to the left.
-    inches = distance_measure();
-    Serial.print("inches = "); Serial.println(inches, DEC);
-    if (inches > 45) {
-      one_foot_forward();
-      current_dist = ++current_dist;
-      Serial.print("current_dist: ");
-      Serial.println(current_dist);
-      inches = distance_measure();    // Measure the distance to the flag in inches.
-      Serial.print("inches = "); Serial.println(inches, DEC);
-      delay(100);
-    }
-    // one_foot_forward();
-    // current_dist = ++current_dist;
-    // Serial.print("current_dist: ");
-    // Serial.println(current_dist);
-    // inches = distance_measure();    // Measure the distance to the flag in inches.
-    // Serial.print("inches = "); Serial.println(inches, DEC);
-    // delay(100);
-    // if (!radio.write( &inches, sizeof(unsigned long) )) { Serial.println(F("failed")); }
+    int Ping_measure = 150; // Initialize a measured range to enter the while loop
+    int max_range = 84;     // Max scan range ~= 7 ft
+
+    // Search for first wall
+    while (Ping_measure > max_range) {Ping_measure = distance_measure(); drive(left_spd, right_spd); }
+
+
+    if (!radio.write( &inches, sizeof(unsigned long) )) { Serial.println(F("failed")); }
     // cc_left = 0;
     // while (cc_left < 185) { drive(-65, -50); }
     // drive(0, 0); delay(1000);
@@ -105,22 +92,43 @@ void loop() {
 
 void one_foot_forward() {
   int distance = 1*(12*64/8);
-  int travel;
   while (cc_left < distance) {
     drive(right_spd, left_spd);
   }
   drive(0, 0); delay(1000);
 }
-unsigned long distance_measure() {
-  pinMode(       Ping_pin, OUTPUT);
-  digitalWrite(  Ping_pin, LOW);
+
+int distance_measure() {
+  pinMode(Ping_pin, OUTPUT);
+  digitalWrite(Ping_pin, LOW);
   delayMicroseconds(2);
-  digitalWrite(  Ping_pin, HIGH);
+  digitalWrite(Ping_pin, HIGH);
   delayMicroseconds(5);
-  digitalWrite(  Ping_pin, LOW);
-  pinMode(       Ping_pin, INPUT);
-  return pulseIn(Ping_pin, HIGH) / 67UL / 2UL;
+  digitalWrite(Ping_pin, LOW);
+
+  // The same pin is used to read the signal from the PING))): a HIGH
+  // pulse whose duration is the time (in microseconds) from the sending
+  // of the ping to the reception of its echo off of an object.
+  pinMode(Ping_pin, INPUT);
+  duration = pulseIn(Ping_pin, HIGH);
+
+  // convert the time into a distance
+  inches = duration / 67UL / 2UL;
+
+  Serial.print(inches);
+  Serial.print(" in,    ");
+if (inches > 1) {return inches;}
 }
+
+// unsigned long microsecondsToInches(unsigned long microseconds) {
+//   // According to Parallax's datasheet for the PING))), there are
+//   // 73.746 microseconds per inch (i.e. sound travels at 1130 feet per
+//   // second).  This gives the distance travelled by the ping, outbound
+//   // and return, so we divide by 2 to get the distance of the obstacle.
+//   // See: http://www.parallax.com/dl/docs/prod/acc/28015-PING-v1.3.pdf
+//   return microseconds / 67UL / 2UL;
+//   // 1 / ( 67 us/in * 1 s/1e6 us * 12 in / ft ) = 1243.8 ft/s = 379.1 m/s!
+// }
 
 void look(int Ping_servo_position) {
   Ping_servo.attach(Ping_servo_pin);
