@@ -67,7 +67,7 @@ void loop() {
     orient_encoders();
     delay(100);
     cc_left = 0;
-    look(Ping_right_value);    // Orient the PING))) 90 degrees to the left.
+    look(Ping_right_value);    // Orient the PING))) 90 degrees to the right.
 
     cc_left = 0;
     int Ping_measure = 150; // Initialize a measured range to enter the while loop
