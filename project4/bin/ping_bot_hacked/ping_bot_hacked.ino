@@ -110,7 +110,7 @@ void loop() {
     cmd[] ={n1, e1, e2, n2};
 
     if (!radio.write( &cmd, sizeof(int) )) { Serial.println(F("failed")); }
-    attach_servos(0); runonce = 0;
+    attach_servos(0); runonce = 0cmd
   }
 }
 
