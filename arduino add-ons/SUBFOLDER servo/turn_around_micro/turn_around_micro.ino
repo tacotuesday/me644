@@ -10,10 +10,10 @@ const byte    left_servo_pin = 10;
 const byte  left_encoder_pin =  9;
 
 // servo center values & speeds
-int right_center_value = 1496;
-int  left_center_value = 1498;
+int right_center_value = 1499;
+int  left_center_value = 1497;
 double  left_spd       = 100;
-double right_spd       = 140;
+double right_spd       = 108;
 
 // encoder counter and desired travel distance
 volatile int cc_left, cc_right;   // encoder counters

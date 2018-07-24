@@ -3,3 +3,11 @@ Right Servo:
 
 Left Servo:
 (1502-1494)/2 + 1494 = 1498
+
+24 July:
+
+Right Servo:
+(1502-1495)/2 + 1495 = 1499
+
+Left Servo:
+(1499-1492)/2 + 1492 = 1497 Inc to go fwd

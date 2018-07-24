@@ -14,8 +14,8 @@ const byte    left_servo_pin = 10;
 const byte  left_encoder_pin =  9;
 
 // servo center values & speeds
-int right_center_value = 1496;
-int  left_center_value = 1498;
+int right_center_value = 1499;
+int  left_center_value = 1497;
 
 // encoder counter and desired travel distance
 volatile int cc_left;
@@ -24,11 +24,11 @@ int distance = 10*(12*64/8);  // = # of 0.125" w fine encoder wheels in 12 feet
 
 // PID variables & initialization
 double dt;                            // time difference between encoders
-double    left_spd = 64;             // speeds determined by turn_around_micro.ino
-double   right_spd = 50;
+double    left_spd = 50;             // speeds determined by turn_around_micro.ino
+double   right_spd = 58;
 double desired_dt  = 0;               // desired time difference between encoders
-PID myPID(&dt, &right_spd, &desired_dt, 0.084457214, 7.712170356, 0.014842, DIRECT);
-
+// PID myPID(&dt, &right_spd, &desired_dt, 0.084457214, 7.712170356, 0.014842, DIRECT);
+PID myPID(&dt, &right_spd, &desired_dt, 0.01, 1, 0, DIRECT);
 void setup() {
   Serial.begin(9600);         // initialize USB communication
   myPID.SetMode(AUTOMATIC);   //turn on PID
