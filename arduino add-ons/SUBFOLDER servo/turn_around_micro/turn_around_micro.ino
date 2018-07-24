@@ -12,14 +12,14 @@ const byte  left_encoder_pin =  9;
 // servo center values & speeds
 int right_center_value = 1499;
 int  left_center_value = 1497;
-double  left_spd       = 100;
-double right_spd       = 108;
+double  left_spd       = 50;
+double right_spd       = 58;
 
 // encoder counter and desired travel distance
 volatile int cc_left, cc_right;   // encoder counters
 int cc;                           // # times out and back
 int distance = 3*(12*64/8);  // = # of 0.125" w fine encoder wheels = 3 foot distance
-int turn_180 = 51;                // # encoder counts to cause it to turn 180 deg. turn
+int turn_180 = 46;                // # encoder counts to cause it to turn 180 deg. turn
 
 void setup() {
   pinMode(right_encoder_pin, INPUT_PULLUP);

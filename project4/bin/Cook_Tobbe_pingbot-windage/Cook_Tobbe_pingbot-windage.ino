@@ -109,7 +109,7 @@ void loop() {
     // Cross the bridge to grabber bot's y-coordinate: e1 + 2'.
     cc_left = 0; cc_right = 0;
     while (cc_left < (e1 + 24) * (64 / 8)) {
-      drive(left_spd, right_spd);
+      drive(left_spd, right_spd - 15);
       // dt = read_encoders(); myPID.Compute();
       Serial.println(F("Crossing the bridge..."));
     }
