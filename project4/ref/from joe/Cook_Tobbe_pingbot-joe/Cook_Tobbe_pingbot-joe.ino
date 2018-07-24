@@ -1,3 +1,5 @@
+// Cook_Tobbe_pingbot.ino -- Production code for robot that uses a Parallax PING))) to find treasure by sensing walls.
+
 #include <Servo.h>
 #include <PID_v1.h>
 #include <SPI.h>    // Serial Peripheral Interface Bus used for short distance communication
@@ -6,7 +8,8 @@
 bool radioNumber = 0;   // Set this radio as radio number 0 or 1
 RF24 radio(6,7);        // Set up nRF24L01 radio on SPI bus plus CE & CSN pins
 byte addresses[][6] = {"1Node","2Node"};
-int cmd[4] = {0};
+int cmd[4] = {0};        // Initialize array to send to grabber bot
+int n1, e1, e2, n2;      // For debugging purposes: declare variables that hold array values
 
 // create servo object to control a servo
 Servo right_servo, left_servo, Ping_servo;
@@ -20,8 +23,8 @@ const byte    Ping_servo_pin =  8;
 const byte          Ping_pin =  7;
 
 // servo center values
-int right_center_value = 1499;
-int  left_center_value = 1486;
+int right_center_value = 1496;
+int  left_center_value = 1498;
 int Ping_right_value = 6;
 int Ping_center_value = 96;
 int Ping_left_value = 180;
@@ -29,15 +32,14 @@ int Ping_left_value = 180;
 // initialize variables, counters, and desired travel distance
 // feet traveled = desired distance ft * (12 in/ft * 64 encoder_changes/rotation / 8 in/rotation)
 byte runonce = 1;               // flag to run loop once
-int inches;                     // distance to wall
-long duration;
+unsigned long duration, inches;
 volatile int cc_left, cc_right;
 
 // PID variables & initialization
 double dt;                      // time difference between encoders
 double desired_dt  = 0;         // desired time difference between encoders
-double    left_spd = 50;
-double   right_spd = 56;
+double    left_spd = 100;
+double   right_spd = 106;
 // PID myPID(&dt, &right_spd, &desired_dt, 0.084457214, 7.712170356, 0.014842, DIRECT);
 
 void setup() {
@@ -50,8 +52,8 @@ void setup() {
   else           { radio.openWritingPipe(addresses[0]); radio.openReadingPipe(1,addresses[1]); }
   radio.stopListening();                            // stop listening to enable sending.
 
-  myPID.SetMode(AUTOMATIC);   //turn on PID
-  myPID.SetOutputLimits( right_spd - 30, right_spd + 30 );
+  // myPID.SetMode(AUTOMATIC);   //turn on PID
+  // myPID.SetOutputLimits( right_spd - 30, right_spd + 30 );
 
   pinMode(right_encoder_pin, INPUT_PULLUP);
   pinMode( left_encoder_pin, INPUT_PULLUP);
@@ -60,58 +62,57 @@ void setup() {
 }
 
 void loop() {
-  if (runonce == 1) {
+
     look(Ping_center_value);            // Orient the PING))) straight ahead.
     attach_servos(1);
     delay(100);
-    orient_encoders();
+    // orient_encoders();
     delay(100);
     cc_left = 0;
     look(Ping_right_value);    // Orient the PING))) 90 degrees to the right.
-
     cc_left = 0;
     int Ping_measure = 150; // Initialize a measured range to enter the while loop
-    int max_range = 84;     // Max scan range ~= 7 ft
+    int max_range = 84;     // Most detectable surfaces will probably be <= 7 ft from sensor
 
-    // Search for first wall surrounding bridge
-    while (Ping_measure > max_range) { Ping_measure = distance_measure(); drive(left_spd, right_spd); }
+    // Search for first wall surrounding bridge.
+    while (Ping_measure > max_range) { Ping_measure = distance_measure(); drive(100, 100); Serial.println(F("Finding bridge wall...")); }
     delay(100); drive(0, 0); delay(100); orient_encoders(); delay(100);
     n1 = cc_left / 8;           // n1 = y-coordinate distance to wall start -> cmd[0]
     e1 = distance_measure();    // e1 = x-coordinate distance to wall -> cmd[1]
     delay(100);
     cc_left = 0; cc_right = 0;  // reset encoder counts
 
-    // Move forward 18 inches to align with bridge
-    while (cc_left < 144) { drive(left_spd, right_spd); }
-    delay(100); orient_encoders(); delay(100); cc_left = 0;
+    // Move forward 18 inches to align with bridge.
+    while (cc_left < 144) { drive(left_spd, right_spd); Serial.println(F("Aligning with bridge...")); }
+    delay(100); /*orient_encoders();*/ delay(100); cc_left = 0;
+
+    // Turn right to cross the bridge. Rotation is slow to avoid overshoot.
+    while (cc_left < 19 || cc_right < 19) { drive(left_spd - 25, right_spd + 25); Serial.println(F("Turning right...")); } // Counter values = spitball. Need to finetune.
+    delay(100); drive(0, 0); delay(100); /*orient_encoders();*/ delay(100);
+    cc_left = 0; cc_right = 0;
     look(Ping_left_value); delay(100);    // orient the Ping toward expected treasure direction
 
-    // Turn right to cross the bridge
-    while (cc_left < 19 || cc_right < 19) { drive(left_spd - 30, right_spd + 30); }
-    delay(100); drive(0, 0); delay(100); orient_encoders(); delay(100);
-    cc_left = 0; cc_right = 0;
-
-    // Cross the bridge to grabber bot's y-coordinate: e1 + 2'
-    while (cc_left < (e1 + 24) * (64 / 8)) { drive(left_spd, right_spd); }
-    delay(100); drive(0, 0); delay(100); orient_encoders(); delay(100);
+    // Cross the bridge to grabber bot's y-coordinate: e1 + 2'.
+    while (cc_left < (e1 + 24) * (64 / 8)) { drive(left_spd, right_spd); Serial.println(F("Crossing the bridge...")); }
+    delay(100); drive(0, 0); delay(100); /*orient_encoders();*/ delay(100);
 
     // Move forward to find the treasure
-    while (Ping_measure > max_range) { Ping_measure = distance_measure(); drive(left_spd, right_spd); }
-    delay(100); drive(0, 0); delay(100); orient_encoders(); delay(100);
+    while (Ping_measure > max_range) { Ping_measure = distance_measure(); drive(left_spd, right_spd); Serial.println(F("Finding treasure...")); }
+    delay(100); drive(0, 0); delay(100); /*orient_encoders();*/ delay(100);
     e2 = cc_left / 8;           // e2 = y-coordinate distance to wall start -> cmd[2]
     n2 = distance_measure();    // n2 = x-coordinate distance to wall -> cmd[3]
     delay(100);
     cc_left = 0; cc_right = 0;
 
     // Move out of grabber bot's path
-    while (cc_left < 24 * (64 / 8)) { drive(left_spd, right_spd); }
+    while (cc_left < 24 * (64 / 8)) { drive(left_spd, right_spd); Serial.println(F("Search complete!")); }
     delay(100); drive(0, 0);
 
-    cmd[] ={n1, e1, e2, n2};
+    cmd[0] = n1; cmd[1] = e1; cmd[2] = e2; cmd[3] = n2;
 
-    if (!radio.write( &cmd, sizeof(int) )) { Serial.println(F("failed")); }
-    attach_servos(0); runonce = 0cmd
-  }
+    if (!radio.write( &cmd, sizeof(unsigned long) )) { Serial.println(F("TX Failed!")); }
+    attach_servos(0); //runonce = 0;
+
 }
 
 int distance_measure() {
@@ -123,11 +124,8 @@ int distance_measure() {
   digitalWrite(Ping_pin, LOW);
   pinMode(Ping_pin, INPUT);
   duration = pulseIn(Ping_pin, HIGH);
-  inches = duration / 67UL / 2UL;        // Expanded to remove microsecondsToInches()
-
-  Serial.print(inches);
-  Serial.print(" in,    ");
-  if (inches > 1) {return inches;}
+  inches = duration / 67UL / 2UL;
+  if (inches > 1) {return inches;}    // Excludes initial zero value
 }
 
 void look(int Ping_servo_position) {
@@ -178,4 +176,4 @@ void drive(double right_speed, double left_speed) {
 }
 
 void  left_counter() { cc_left++; }
-void  left_counter() { cc_left++; }
+void  right_counter() { cc_right++; }

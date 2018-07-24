@@ -7,7 +7,7 @@ int control_mode = 1;
 Servo test_servo;
 
 // pin definition
-int right_servo_pin = 12;
+int right_servo_pin = 10;
 // int  left_servo_pin = 11;
 int speed_pin = 11;
 int spd;

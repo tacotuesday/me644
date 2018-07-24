@@ -4,16 +4,16 @@
 Servo right_servo, left_servo;
 
 // pin definition
-int  left_encoder_pin = 10;
-int right_encoder_pin =  9;
-int    left_servo_pin = 11;
-int   right_servo_pin = 12;
+const byte   right_servo_pin = 12;
+const byte right_encoder_pin = 11;
+const byte    left_servo_pin = 10;
+const byte  left_encoder_pin =  9;
 
 // servo center values & speeds
-int right_center_value = 1511;
-int  left_center_value = 1509;
-double  left_spd       =  92;
-double right_spd       = 100;
+int right_center_value = 1496;
+int  left_center_value = 1498;
+double  left_spd       = 100;
+double right_spd       = 140;
 
 // encoder counter and desired travel distance
 volatile int cc_left, cc_right;   // encoder counters
